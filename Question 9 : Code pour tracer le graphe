@@ -1,0 +1,46 @@
+from sage.all import *
+
+# Liste des 16 triplets orthogonaux
+triplets = [
+    [(1, 0, 0), (0, 0, 1), (0, 1, 0)],
+    [(1, 0, 0), (0, 1, -1/sqrt(2)), (0, 1/sqrt(2), 1)],
+    [(1, 0, 0), (0, -1, 1), (0, 1, 1)],
+    [(1, 0, 0), (0, 1, 1/sqrt(2)), (0, -1/sqrt(2), 1)],
+    [(0, 1, 0), (1, 0, 1/sqrt(2)), (-1/sqrt(2), 0, 1)],
+    [(0, 1, 0), (1, 0, 1), (-1, 0, 1)],
+    [(0, 1, 0), (1, 0, -1/sqrt(2)), (1/sqrt(2), 0, 1)],
+    [(0, 1, 1), (0, -1, 1), (1, 0, 0)],
+    [(0, 0, 1), (1, 1/sqrt(2), 0), (-1/sqrt(2), 1, 0)],
+    [(0, 0, 1), (1, 1/sqrt(2), 0), (-1/sqrt(2), 1, 0)],
+    [(-1, 1, 0), (-1/sqrt(2), -1/sqrt(2), 1), (1/sqrt(2), 1/sqrt(2), 1)],
+    [(0, 1, 1), (1, -1/sqrt(2), 1/sqrt(2)), (1, 1/sqrt(2), -1/sqrt(2))],
+    [(1, 0, 1), (-1/sqrt(2), 1, 1/sqrt(2)), (1/sqrt(2), 1, -1/sqrt(2))],
+    [(0, -1, 1), (1, 1/sqrt(2), 1/sqrt(2)), (1, -1/sqrt(2), -1/sqrt(2))],
+    [(1, 1, 0), (-1/sqrt(2), 1/sqrt(2), 1), (1/sqrt(2), -1/sqrt(2), 1)],
+    [(-1, 0, 1), (1/sqrt(2), 1, 1/sqrt(2)), (-1/sqrt(2), 1, -1/sqrt(2))]
+]
+
+# Fonction pour vérifier si deux triplets partagent une direction
+def share_one_direction(triplet1, triplet2):
+    shared = sum(1 for v1 in triplet1 for v2 in triplet2 if vector(v1) == vector(v2))
+    return shared == 1  # Partage exactement une direction
+
+# Construction du graphe
+G = Graph()
+for i, triplet1 in enumerate(triplets):
+    G.add_vertex(i)  # Chaque triplet est un nœud
+    for j, triplet2 in enumerate(triplets):
+        if i < j and share_one_direction(triplet1, triplet2):
+            G.add_edge(i, j)
+
+# Dessin du graphe en 2D avec une mise en page circulaire
+pos = G.layout_circular()
+graph_plot = G.plot(pos=pos, vertex_labels=True, graph_border=True)
+
+# Affichage
+graph_plot.show()
+
+# Calcul et affichage du degré de chaque nœud
+print("Degrés des nœuds :")
+for node in G.vertices():
+    print(f"Triplet {node}: degré {G.degree(node)}")
