@@ -1,0 +1,44 @@
+from sage.all import *
+pairs = [
+    (vector([1/2*sqrt(2), -1/2*sqrt(2), 1]), vector([1, 0, -1/2*sqrt(2)])),  
+    (vector([-1/2*sqrt(2), 0, 1]), vector([1, -1/2*sqrt(2), 1/2*sqrt(2)])), 
+    (vector([1, 1/2*sqrt(2), 0]), vector([-1/2*sqrt(2), 1, -1/2*sqrt(2)])),
+    (vector([1/2*sqrt(2), 1, -1/2*sqrt(2)]), vector([1, -1/2*sqrt(2), 0])), 
+    (vector([1/2*sqrt(2), 1, -1/2*sqrt(2)]), vector([0, 1/2*sqrt(2), 1])), 
+    (vector([1, 0, 1/2*sqrt(2)]), vector([-1/2*sqrt(2), 1/2*sqrt(2), 1])), 
+    (vector([-1/2*sqrt(2), 1, 0]), vector([1, 1/2*sqrt(2), -1/2*sqrt(2)])),
+    (vector([0, -1/2*sqrt(2), 1]), vector([-1/2*sqrt(2), 1, 1/2*sqrt(2)])),
+    (vector([1, -1/2*sqrt(2), -1/2*sqrt(2)]), vector([1/2*sqrt(2), 0, 1])), 
+    (vector([1/2*sqrt(2), 1, 1/2*sqrt(2)]), vector([1, -1/2*sqrt(2), 0])), 
+    (vector([1, 1/2*sqrt(2), 0]), vector([-1/2*sqrt(2), 1, 1/2*sqrt(2)])), 
+    (vector([-1/2*sqrt(2), 1, -1/2*sqrt(2)]), vector([0, 1/2*sqrt(2), 1])), 
+    (vector([1/2*sqrt(2), 1, 0]), vector([1, -1/2*sqrt(2), 1/2*sqrt(2)])), 
+    (vector([0, 1, -1/2*sqrt(2)]), vector([-1/2*sqrt(2), 1/2*sqrt(2), 1])), 
+    (vector([0, -1/2*sqrt(2), 1]), vector([1/2*sqrt(2), 1, 1/2*sqrt(2)])), 
+    (vector([-1/2*sqrt(2), -1/2*sqrt(2), 1]), vector([0, 1, 1/2*sqrt(2)])), 
+    (vector([1/2*sqrt(2), 0, 1]), vector([1, 1/2*sqrt(2), -1/2*sqrt(2)])), 
+    (vector([1, 0, 1/2*sqrt(2)]), vector([-1/2*sqrt(2), -1/2*sqrt(2), 1])), 
+    (vector([-1/2*sqrt(2), 1, 0]), vector([1, 1/2*sqrt(2), 1/2*sqrt(2)])), 
+    (vector([1/2*sqrt(2), 1/2*sqrt(2), 1]), vector([1, 0, -1/2*sqrt(2)])), 
+    (vector([0, 1, -1/2*sqrt(2)]), vector([1/2*sqrt(2), 1/2*sqrt(2), 1])), 
+    (vector([1/2*sqrt(2), -1/2*sqrt(2), 1]), vector([0, 1, 1/2*sqrt(2)])), 
+    (vector([1, -1/2*sqrt(2), -1/2*sqrt(2)]), vector([1/2*sqrt(2), 1, 0])), 
+    (vector([-1/2*sqrt(2), 0, 1]), vector([1, 1/2*sqrt(2), 1/2*sqrt(2)]))
+]
+
+def normal_vector(v1, v2):
+    return v1.cross_product(v2)
+
+def normalize_to_cube(v):
+    max_coord = max(abs(c) for c in v)
+    return vector([c / max_coord for c in v])
+
+normalized_normals = []
+for v1, v2 in pairs:
+    n = normal_vector(v1, v2)
+    normalized_n = normalize_to_cube(n)
+    normalized_normals.append(normalized_n)
+    
+print("Vecteurs normaux normalisés ramenés sur le cube :")
+for normal in normalized_normals:
+    print(normal)
