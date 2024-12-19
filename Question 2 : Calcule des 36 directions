@@ -1,0 +1,135 @@
+from copy import deepcopy
+from numpy import array, radians, sin, cos, argsort, where
+from scipy.spatial import distance
+from itertools import product
+
+class MatricesRotations:
+    """Class contenant des fonctions pour appliquer une matrice de rotation sur les 3 axes X, Y, Z"""
+
+    # Fonction qui effectue une rotation theta sur l'axe X
+    @staticmethod
+    def axeX(n, theta):
+        vect = [n[0],
+                n[1] * cos(theta) - n[2] * sin(theta),
+                n[1] * sin(theta) + n[2] * cos(theta)]
+        return vect
+
+    # Fonction qui effectue une rotation theta sur l'axe Y
+    @staticmethod
+    def axeY(n, theta):
+        vect = [n[0] * cos(theta) + n[2] * sin(theta),
+                n[1],
+                -n[0] * sin(theta) + n[2] * cos(theta)]
+        return vect
+
+    # Fonction qui effectue une rotation theta sur l'axe Z
+    @staticmethod
+    def axeZ(n, theta):
+        vect = [n[0] * cos(theta) - n[1] * sin(theta),
+                n[0] * sin(theta) + n[1] * cos(theta),
+                n[2]]
+        return vect
+
+class DirectionsPeres(MatricesRotations):
+    def __init__(self, d):
+        self.D = [-d, d]
+        self._CONST_LST_ORIGINE = [list(tup)
+                                   for tup in product(self.D, self.D, self.D)]
+        self.cube = deepcopy(self._CONST_LST_ORIGINE)
+
+    def main(self, d):
+        cubeX = self.rotation(self.axeX, theta)
+        cubeY = self.rotation(self.axeY, theta)
+        cubeZ = self.rotation(self.axeZ, theta)
+        self.voisins(self.cube)
+        self.voisins(cubeX)
+        self.voisins(cubeY)
+        self.voisins(cubeZ)
+        tousPoints = self.cube + cubeX + cubeY + cubeZ
+        self.lbda(tousPoints, d)
+        return self.peres(tousPoints, d)
+
+    def rotation(self, axe, theta):
+        cubeTourner = []
+        for i in self._CONST_LST_ORIGINE:
+            rotationPoint = axe(i, theta)
+            if rotationPoint not in cubeTourner:
+                cubeTourner.append(rotationPoint)
+        return cubeTourner
+
+    def equidistant(self, l1, l2):
+        l1 = [(l1[i] + l2[i])/2 for i in range(len(l1))]
+        return l1
+
+    def voisins(self, sommetsCube):
+        pointsCube = deepcopy(sommetsCube)
+        dist = distance.squareform(distance.pdist(pointsCube))
+        lProches = argsort(dist, axis=1)
+        k = 3
+        for idx, i in enumerate(lProches):
+            for ii in i[1:k+1]:
+                pointsCube[idx].append(sommetsCube[ii])
+
+        for i in pointsCube:
+            sommet = [i[0], i[1], i[2]]
+            for ii in i[3:]:
+                pointEquidistant = self.equidistant(sommet, ii)
+                if pointEquidistant not in sommetsCube:
+                    sommetsCube.append(pointEquidistant)
+
+    def creerPlan(self, points, d, i):
+        v = [d, 0, 0]
+        vNormal = [v[i % len(v)], v[(i+1) % len(v)], v[(i+2) % len(v)]]
+        plan = array([-vNormal[0], -vNormal[1], -vNormal[2], d])
+        return plan
+
+    def indexPointsPlan(self, pts, plan):
+        return where(abs(pts.dot(plan[:3]) + plan[3]) <= 1e-6)
+
+    def lbda(self, tousPoints, d):
+        for idx, point in enumerate(tousPoints):
+            lbda = d/(max(abs(point[0]), abs(point[1]), abs(point[2])))
+            tousPoints[idx] = [lbda*point[0], lbda*point[1], lbda*point[2]]
+
+    def peres(self, points, d):
+        Peres = []
+        lTemp = array(points)
+        for i in range(3):
+            plan = self.creerPlan(self._CONST_LST_ORIGINE, d, i)
+            indexes = self.indexPointsPlan(lTemp, plan)[0]  # Extraire les indices
+            for pt in lTemp[indexes]:
+                pt = pt.tolist()
+                if pt not in Peres:
+                    Peres.append(pt)
+        
+        # Supprime les sommets du cube initial
+        Peres = [i for i in Peres if i not in self._CONST_LST_ORIGINE]
+
+        # Supprime les points sur les arrêtes en trop
+        for i in lTemp[self.indexPointsPlan(lTemp, [0, 0, 1, 1])]:
+            i = list(i)
+            if i in Peres:
+                Peres.remove(i)
+                
+        for i in Peres:
+            if i[0] == 1 and i[1] == -1:
+                Peres.remove(i)
+
+        return Peres
+
+    def affiche(self, l):
+        print(f'Il y a {len(l)} éléments qui sont : ')
+        for i in l:
+            print(i, end=',\n')
+
+# Si exécuté en tant que programme principal
+if __name__ == '__main__':
+    d = 1  # Dimension des cubes
+    theta = radians(45)  # Angle de rotation entre les cubes
+
+    # Créer les 33 directions de Peres
+    directions_peres = DirectionsPeres(d)
+    Peres = directions_peres.main(d)
+
+    # Afficher les directions de Peres
+    directions_peres.affiche(Peres)
