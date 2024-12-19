@@ -1,0 +1,33 @@
+def extract_unique_pairs_from_triplets(triplets):
+    unique_pairs = set()
+    for triplet in triplets:
+        u, v, w = triplet 
+        unique_pairs.add(tuple(sorted([tuple(u), tuple(v)])))
+        unique_pairs.add(tuple(sorted([tuple(u), tuple(w)])))
+        unique_pairs.add(tuple(sorted([tuple(v), tuple(w)])))
+    return list(unique_pairs)
+
+triplets = [
+    (vector([1,0,1]),vector([-1,0,1]),vector([0,1,0])),
+    (vector([1,1,0]),vector([0,0,1]),vector([-1,1,0])),
+    (vector([1,-1/sqrt(2),-1/sqrt(2)]),vector([1,1/sqrt(2),1/sqrt(2)]),vector([0,-1,1])),
+    (vector([1,-1/sqrt(2),0]),vector([0,0,1]),vector([1/sqrt(2),1,0])),
+    (vector([1,0,0]),vector([0,-1,1]),vector([0,1,1])),
+    (vector([1,0,0]),vector([0,-1/sqrt(2),1]),vector([0,1,1/sqrt(2)])),
+    (vector([1,0,-1/sqrt(2)]),vector([1/sqrt(2),0,1]),vector([0,1,0])),
+    (vector([-1,0,1]),vector([-1/sqrt(2),1,-1/sqrt(2)]),vector([1/sqrt(2),1,1/sqrt(2)])),
+    (vector([1,0,1]),vector([-1/sqrt(2),1,1/sqrt(2)]),vector([1/sqrt(2),1,-1/sqrt(2)])),
+    (vector([1,1,0]),vector([1/sqrt(2),-1/sqrt(2),1]),vector([-1/sqrt(2),1/sqrt(2),1])),
+    (vector([1,1/sqrt(2),-1/sqrt(2)]),vector([1,-1/sqrt(2), 1/sqrt(2)]),vector([0,1,1])),
+    (vector([1,1/sqrt(2),0]),vector([0,0,1]),vector([-1/sqrt(2),1,0])),
+    (vector([1,0,0]),vector([0,0,1]),vector([0,1,0])),
+    (vector([1,0,0]),vector([0,1/sqrt(2),1]),vector([0,1,-1/sqrt(2)])),
+    (vector([1,0,1/sqrt(2)]),vector([-1/sqrt(2),0,1]),vector([0,1,0])),
+    (vector([-1/sqrt(2),-1/sqrt(2),1]),vector([1/sqrt(2),1/sqrt(2),1]),vector([-1,1,0]))
+]
+
+unique_pairs = extract_unique_pairs_from_triplets(triplets)
+
+print("paires unique extraites des triplets :")
+for idx, pair in enumerate(unique_pairs, 1):
+    print(pair)
