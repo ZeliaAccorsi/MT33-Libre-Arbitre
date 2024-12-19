@@ -1,0 +1,53 @@
+from sage.all import*
+
+cube_points = [
+    vector([1,0,1]),
+    vector([1,1,0]),
+    vector([1,-1/sqrt(2),-1/sqrt(2)]),
+    vector([1,1/sqrt(2),-1/sqrt(2)]),
+    vector([1,-1/sqrt(2),1/sqrt(2)]),
+    vector([1,1/sqrt(2),1/sqrt(2)]),
+    vector([1,-1/sqrt(2),0]),
+    vector([1,1/sqrt(2),0]),
+    vector([1,0,0]),
+    vector([1,0,-1/sqrt(2)]),
+    vector([1,0,1/sqrt(2)]),
+    vector([-1,0,1]),
+    vector([0,-1,1]),
+    vector([0,1,1]),
+    vector([-1/sqrt(2),0,1]),
+    vector([1/sqrt(2),0,1]),
+    vector([0,0,1]),
+    vector([0,-1/sqrt(2),1]),
+    vector([0,1/sqrt(2),1]),
+    vector([-1/sqrt(2),-1/sqrt(2),1]),
+    vector([1/sqrt(2),-1/sqrt(2),1]),
+    vector([-1/sqrt(2),1/sqrt(2),1]),
+    vector([1/sqrt(2),1/sqrt(2),1]),
+    vector([-1,1,0]),
+    vector([-1/sqrt(2),1,0]),
+    vector([1/sqrt(2),1,0]),
+    vector([0,1,0]),
+    vector([-1/sqrt(2),1,1/sqrt(2)]),
+    vector([-1/sqrt(2),1,-1/sqrt(2)]),
+    vector([1/sqrt(2),1,1/sqrt(2)]),
+    vector([1/sqrt(2),1,-1/sqrt(2)]),
+    vector([0,1,-1/sqrt(2)]),
+    vector([0,1,1/sqrt(2)]),
+    
+]
+
+def directions_peres(points):
+    orthogonal_pairs = []
+    for i in range(len(points)):
+        for j in range (i+1, len(points)):
+            u, v = points[i], points[j]
+            if u.dot_product(v) == 0:
+                orthogonal_pairs.append((u,v))
+    return orthogonal_pairs
+                
+orthogonal_pairs = directions_peres(cube_points)
+
+print("Paires de directions de Peres orthogonales :")
+for pair in orthogonal_pairs:
+    print(pair)
