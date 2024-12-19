@@ -1,0 +1,67 @@
+# Importation des fonctions nécessaires de SageMath
+from sage.all import *
+
+# Définition des 33 directions de Peres (normalisées)
+directions = [
+    vector([1, 0, 1]), 
+    vector([1, 1, 0]), 
+    vector([1, -sqrt(2)/2, -sqrt(2)/2]),
+    vector([1, sqrt(2)/2, -sqrt(2)/2]),
+    vector([1, -sqrt(2)/2, sqrt(2)/2]),
+    vector([1, sqrt(2)/2, sqrt(2)/2]),
+    vector([1, -sqrt(2)/2, 0]),
+    vector([1, sqrt(2)/2, 0]),
+    vector([1, 0, 0]),
+    vector([1, 0, -sqrt(2)/2]),
+    vector([1, 0, sqrt(2)/2]),
+    vector([-1, 0, 1]),
+    vector([0, -1, 1]),
+    vector([0, 1, 1]),
+    vector([-sqrt(2)/2, 0, 1]),
+    vector([sqrt(2)/2, 0, 1]),
+    vector([0, 0, 1]),
+    vector([0, -sqrt(2)/2, 1]),
+    vector([0, sqrt(2)/2, 1]),
+    vector([-sqrt(2)/2, -sqrt(2)/2, 1]),
+    vector([sqrt(2)/2, -sqrt(2)/2, 1]),
+    vector([-sqrt(2)/2, sqrt(2)/2, 1]),
+    vector([sqrt(2)/2, sqrt(2)/2, 1]),
+    vector([-1, 1, 0]),
+    vector([-sqrt(2)/2, 1, 0]),
+    vector([sqrt(2)/2, 1, 0]),
+    vector([0, 1, 0]),
+    vector([-sqrt(2)/2, 1, sqrt(2)/2]),
+    vector([-sqrt(2)/2, 1, -sqrt(2)/2]),
+    vector([sqrt(2)/2, 1, sqrt(2)/2]),
+    vector([sqrt(2)/2, 1, -sqrt(2)/2]),
+    vector([0, 1, -sqrt(2)/2]),
+    vector([0, 1, sqrt(2)/2])
+]
+
+# Fonction pour tester l'orthogonalité de deux vecteurs
+def test_orthogonality(v1, v2):
+    return v1.dot_product(v2) == 0
+
+# Fonction pour tester l'orthogonalité de trois vecteurs (deux à deux)
+def are_triplet_orthogonal(v1, v2, v3):
+    return test_orthogonality(v1, v2) and test_orthogonality(v1, v3) and test_orthogonality(v2, v3)
+
+# Fonction pour tester et lister tous les triplets orthogonaux
+def find_orthogonal_triplets(directions):
+    orthogonal_triplets = []
+    
+    # Générer toutes les combinaisons possibles de triplets parmi les directions
+    for triplet in Combinations(directions, 3):
+        v1, v2, v3 = triplet
+        if are_triplet_orthogonal(v1, v2, v3):
+            orthogonal_triplets.append(triplet)
+    
+    return orthogonal_triplets
+
+# Trouver tous les triplets orthogonaux parmi les directions
+orthogonal_triplets = find_orthogonal_triplets(directions)
+
+# Afficher les résultats
+print(f"Nombre total de triplets orthogonaux : {len(orthogonal_triplets)}")
+for triplet in orthogonal_triplets:
+    print(triplet)
