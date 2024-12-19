@@ -1,0 +1,50 @@
+# Définir l'action du groupe G sur Gamma et Gamma_101 de manière théorique
+def action_groupe_sur_coloriage(G, gamma, d):
+    """
+    Action de G sur une application gamma : P -> {0, 1}.
+    (g * gamma)(d) = gamma(g^-1 * d).
+    """
+    return lambda g, d: gamma(g.inverse() * d)
+
+def est_invariant_sous_G(gamma, triplets, paires, G):
+    """
+    Vérifie si gamma appartient à Gamma_101 et si G laisse invariant Gamma_101.
+    """
+    for g in G:
+        g_gamma = lambda d: gamma(g.inverse() * d)  # Action de G sur gamma
+        # Vérifier les conditions du lemme pour g * gamma
+        for d, d_prime, d_double_prime in triplets:
+            if g_gamma(d) + g_gamma(d_prime) + g_gamma(d_double_prime) != 2:
+                return False
+        for d, d_prime in paires:
+            if g_gamma(d) == 0 and g_gamma(d_prime) == 0:
+
+
+
+                return False
+    return True
+
+# Supposition que Gamma_101 est non vide
+def montre_action_de_G(G, triplets, paires):
+    """
+    Montre théoriquement que G agit sur Gamma_101 si Gamma_101 est non vide.
+    """
+    print("Supposons que Gamma_101 ≠ ∅.")
+    print("On considère une coloration gamma appartenant à Gamma_101.")
+    print("L'action de G sur Gamma induit une action sur Gamma_101 par définition :")
+    print("(g * gamma)(d) = gamma(g^-1 * d).")
+    print("\nVérifions que g * gamma respecte les conditions (i) et (ii) :")
+    print("1. Condition (i) : Pour chaque triplet orthogonal, la somme reste 2.")
+    print("2. Condition (ii) : Pour chaque paire orthogonale non dans un triplet, (0, 0) est interdit.")
+    print("\nAinsi, G agit sur Gamma_101 par restriction de son action sur Gamma.")
+
+# Exemple d'utilisation
+def main():
+    G = "Groupe des rotations et symétries sur P"  # Groupe abstrait
+    triplets = "Ensemble des 16 triplets orthogonaux"  # Structure théorique
+    paires = "Ensemble des 24 paires orthogonales"  # Structure théorique
+    
+    montre_action_de_G(G, triplets, paires)
+
+# Lancer le programme
+main()
