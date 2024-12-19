@@ -1,46 +1,67 @@
-from sage.all import *
+import matplotlib.pyplot as plt
+import networkx as nx
+from itertools import combinations
 
-# Liste des 16 triplets orthogonaux
+# Liste des 16 triplets orthogonaux (les triplets sont déjà donnés)
 triplets = [
-    [(1, 0, 0), (0, 0, 1), (0, 1, 0)],
-    [(1, 0, 0), (0, 1, -1/sqrt(2)), (0, 1/sqrt(2), 1)],
-    [(1, 0, 0), (0, -1, 1), (0, 1, 1)],
-    [(1, 0, 0), (0, 1, 1/sqrt(2)), (0, -1/sqrt(2), 1)],
-    [(0, 1, 0), (1, 0, 1/sqrt(2)), (-1/sqrt(2), 0, 1)],
-    [(0, 1, 0), (1, 0, 1), (-1, 0, 1)],
-    [(0, 1, 0), (1, 0, -1/sqrt(2)), (1/sqrt(2), 0, 1)],
-    [(0, 1, 1), (0, -1, 1), (1, 0, 0)],
-    [(0, 0, 1), (1, 1/sqrt(2), 0), (-1/sqrt(2), 1, 0)],
-    [(0, 0, 1), (1, 1/sqrt(2), 0), (-1/sqrt(2), 1, 0)],
-    [(-1, 1, 0), (-1/sqrt(2), -1/sqrt(2), 1), (1/sqrt(2), 1/sqrt(2), 1)],
-    [(0, 1, 1), (1, -1/sqrt(2), 1/sqrt(2)), (1, 1/sqrt(2), -1/sqrt(2))],
-    [(1, 0, 1), (-1/sqrt(2), 1, 1/sqrt(2)), (1/sqrt(2), 1, -1/sqrt(2))],
-    [(0, -1, 1), (1, 1/sqrt(2), 1/sqrt(2)), (1, -1/sqrt(2), -1/sqrt(2))],
-    [(1, 1, 0), (-1/sqrt(2), 1/sqrt(2), 1), (1/sqrt(2), -1/sqrt(2), 1)],
-    [(-1, 0, 1), (1/sqrt(2), 1, 1/sqrt(2)), (-1/sqrt(2), 1, -1/sqrt(2))]
+    [[1.0, 0.0, 1.0], [-1.0, 0.0, 1.0], [0.0, 1.0, 0.0]],
+    [[1.0, 0.0, 1.0], [-0.7071067811865476, 1.0, 0.7071067811865476], [0.7071067811865476, 1.0, -0.7071067811865476]],
+    [[1.0, 1.0, 0.0], [0.0, 0.0, 1.0], [-1.0, 1.0, 0.0]],
+    [[1.0, 1.0, 0.0], [0.7071067811865476, -0.7071067811865476, 1.0], [-0.7071067811865476, 0.7071067811865476, 1.0]],
+    [[1.0, -0.7071067811865476, -0.7071067811865476], [1.0, 0.7071067811865476, 0.7071067811865476], [0.0, -1.0, 1.0]],
+    [[1.0, 0.7071067811865476, -0.7071067811865476], [1.0, -0.7071067811865476, 0.7071067811865476], [0.0, 1.0, 1.0]],
+    [[1.0, -0.7071067811865475, 0.0], [0.0, 0.0, 1.0], [0.7071067811865475, 1.0, 0.0]],
+    [[1.0, 0.7071067811865475, 0.0], [0.0, 0.0, 1.0], [-0.7071067811865475, 1.0, 0.0]],
+    [[1.0, 0.0, 0.0], [0.0, -1.0, 1.0], [0.0, 1.0, 1.0]],
+    [[1.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 0.0]],
+    [[1.0, 0.0, 0.0], [0.0, -0.7071067811865475, 1.0], [0.0, 1.0, 0.7071067811865475]],
+    [[1.0, 0.0, 0.0], [0.0, 0.7071067811865475, 1.0], [0.0, 1.0, -0.7071067811865475]],
+    [[1.0, 0.0, -0.7071067811865475], [0.7071067811865475, 0.0, 1.0], [0.0, 1.0, 0.0]],
+    [[1.0, 0.0, 0.7071067811865475], [-0.7071067811865475, 0.0, 1.0], [0.0, 1.0, 0.0]],
+    [[-1.0, 0.0, 1.0], [-0.7071067811865476, 1.0, -0.7071067811865476], [0.7071067811865476, 1.0, 0.7071067811865476]],
+    [[-0.7071067811865476, -0.7071067811865476, 1.0], [0.7071067811865476, 0.7071067811865476, 1.0], [-1.0, 1.0, 0.0]]
 ]
 
 # Fonction pour vérifier si deux triplets partagent une direction
-def share_one_direction(triplet1, triplet2):
-    shared = sum(1 for v1 in triplet1 for v2 in triplet2 if vector(v1) == vector(v2))
-    return shared == 1  # Partage exactement une direction
+def share_direction(triplet1, triplet2):
+    for direction in triplet1:
+        if direction in triplet2:
+            return True
+    return False
 
-# Construction du graphe
-G = Graph()
-for i, triplet1 in enumerate(triplets):
-    G.add_vertex(i)  # Chaque triplet est un nœud
-    for j, triplet2 in enumerate(triplets):
-        if i < j and share_one_direction(triplet1, triplet2):
-            G.add_edge(i, j)
+# Création du graphe
+G = nx.Graph()
 
-# Dessin du graphe en 2D avec une mise en page circulaire
-pos = G.layout_circular()
-graph_plot = G.plot(pos=pos, vertex_labels=True, graph_border=True)
+# Ajouter des nœuds pour chaque triplet
+for idx, triplet in enumerate(triplets):
+    G.add_node(idx, triplet=triplet)
 
-# Affichage
-graph_plot.show()
+# Ajouter des arêtes entre les triplets qui partagent au moins une direction
+for i, j in combinations(range(len(triplets)), 2):
+    if share_direction(triplets[i], triplets[j]):
+        G.add_edge(i, j)
 
-# Calcul et affichage du degré de chaque nœud
-print("Degrés des nœuds :")
-for node in G.vertices():
-    print(f"Triplet {node}: degré {G.degree(node)}")
+# Visualisation du graphe
+options = {"font_size": 8, "node_size": 100, "node_color": "lightblue",
+           "linewidths": 1, "width": 0.5}
+
+# Position des nœuds (disposition circulaire)
+pos = nx.circular_layout(G)
+plt.figure(figsize=(12, 12))
+
+# Tracer le graphe
+nx.draw_networkx(G, pos, **options)
+
+# Ajouter des labels pour les nœuds
+labels = {i: f"Triplet {i+1}" for i in range(len(triplets))}
+nx.draw_networkx_labels(G, pos, labels, font_size=8)
+
+# Définir les marges et afficher le graphe
+plt.title("Graphe des Triplets Orthogonaux")
+plt.axis("off")
+plt.show()
+
+# Afficher le degré de chaque nœud
+degre = G.degree()
+for node, degree in degre:
+    print(f"Degré du nœud {node+1} (Triplet {node+1}): {degree}")
