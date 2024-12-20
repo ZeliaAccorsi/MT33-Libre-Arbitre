@@ -1,0 +1,65 @@
+ from sympy import sqrt, symbols, simplify
+
+# Definition des vecteurs
+pairs = [
+    ([1/2*sqrt(2), -1/2*sqrt(2), 1], [1, 0, -1/2*sqrt(2)]),
+    ([-1/2*sqrt(2), 0, 1], [1, -1/2*sqrt(2), 1/2*sqrt(2)]),
+    ([1, 1/2*sqrt(2), 0], [-1/2*sqrt(2), 1, -1/2*sqrt(2)]),
+    ([1/2*sqrt(2), 1, -1/2*sqrt(2)], [1, -1/2*sqrt(2), 0]),
+    ([1/2*sqrt(2), 1, -1/2*sqrt(2)], [0, 1/2*sqrt(2), 1]),
+    ([1, 0, 1/2*sqrt(2)], [-1/2*sqrt(2), 1/2*sqrt(2), 1]),
+    ([-1/2*sqrt(2), 1, 0], [1, 1/2*sqrt(2), -1/2*sqrt(2)]),
+    ([0, -1/2*sqrt(2), 1], [-1/2*sqrt(2), 1, 1/2*sqrt(2)]),
+    ([1, -1/2*sqrt(2), -1/2*sqrt(2)], [1/2*sqrt(2), 0, 1]),
+    ([1/2*sqrt(2), 1, 1/2*sqrt(2)], [1, -1/2*sqrt(2), 0]),
+    ([1, 1/2*sqrt(2), 0], [-1/2*sqrt(2), 1, 1/2*sqrt(2)]),
+    ([-1/2*sqrt(2), 1, -1/2*sqrt(2)], [0, 1/2*sqrt(2), 1]),
+    ([1/2*sqrt(2), 1, 0], [1, -1/2*sqrt(2), 1/2*sqrt(2)]),
+    ([0, 1, -1/2*sqrt(2)], [-1/2*sqrt(2), 1/2*sqrt(2), 1]),
+    ([0, -1/2*sqrt(2), 1], [1/2*sqrt(2), 1, 1/2*sqrt(2)]),
+    ([-1/2*sqrt(2), -1/2*sqrt(2), 1], [0, 1, 1/2*sqrt(2)]),
+    ([1/2*sqrt(2), 0, 1], [1, 1/2*sqrt(2), -1/2*sqrt(2)]),
+    ([1, 0, 1/2*sqrt(2)], [-1/2*sqrt(2), -1/2*sqrt(2), 1]),
+    ([-1/2*sqrt(2), 1, 0], [1, 1/2*sqrt(2), 1/2*sqrt(2)]),
+    ([1/2*sqrt(2), 1/2*sqrt(2), 1], [1, 0, -1/2*sqrt(2)]),
+    ([0, 1, -1/2*sqrt(2)], [1/2*sqrt(2), 1/2*sqrt(2), 1]),
+    ([1/2*sqrt(2), -1/2*sqrt(2), 1], [0, 1, 1/2*sqrt(2)]),
+    ([1, -1/2*sqrt(2), -1/2*sqrt(2)], [1/2*sqrt(2), 1, 0]),
+    ([-1/2*sqrt(2), 0, 1], [1, 1/2*sqrt(2), 1/2*sqrt(2)]),
+]
+
+triplets = [
+    [(1, 0, 0), (0, 0, 1), (0, 1, 0)],
+    [(1, 0, 0), (0, 1, -1/sqrt(2)), (0, 1/sqrt(2), 1)],
+    [(1, 0, 0), (0, -1, 1), (0, 1, 1)],
+    [(1, 0, 0), (0, 1, 1/sqrt(2)), (0, -1/sqrt(2), 1)],
+    [(0, 1, 0), (1, 0, 1/sqrt(2)), (-1/sqrt(2), 0, 1)],
+    [(0, 1, 0), (1, 0, 1), (-1, 0, 1)],
+    [(0, 1, 0), (1, 0, -1/sqrt(2)), (1/sqrt(2), 0, 1)],
+    [(0, 1, 1), (0, -1, 1), (1, 0, 0)],
+    [(0, 0, 1), (1, 1/sqrt(2), 0), (-1/sqrt(2), 1, 0)],
+    [(0, 0, 1), (1, 1/sqrt(2), 0), (-1/sqrt(2), 1, 0)],
+    [(-1, 1, 0), (-1/sqrt(2), -1/sqrt(2), 1), (1/sqrt(2), 1/sqrt(2), 1)],
+    [(0, 1, 1), (1, -1/sqrt(2), 1/sqrt(2)), (1, 1/sqrt(2), -1/sqrt(2))],
+    [(1, 0, 1), (-1/sqrt(2), 1, 1/sqrt(2)), (1/sqrt(2), 1, -1/sqrt(2))],
+    [(0, -1, 1), (1, 1/sqrt(2), 1/sqrt(2)), (1, -1/sqrt(2), -1/sqrt(2))],
+    [(1, 1, 0), (-1/sqrt(2), 1/sqrt(2), 1), (1/sqrt(2), -1/sqrt(2), 1)],
+    [(-1, 0, 1), (1/sqrt(2), 1, 1/sqrt(2)), (-1/sqrt(2), 1, -1/sqrt(2))]
+]
+
+# Fonction pour calculer le produit scalaire
+def dot_product(v1, v2):
+    return simplify(sum([v1[i]*v2[i] for i in range(3)]))
+
+# Tester l'orthogonalité des paires
+pairs_results = [(i + 1, dot_product(pair[0], pair[1])) for i, pair in enumerate(pairs)]
+
+# Tester l'orthogonalité des triplets
+triplets_results = []
+for i, triplet in enumerate(triplets):
+    dp_1_2 = dot_product(triplet[0], triplet[1])
+    dp_1_3 = dot_product(triplet[0], triplet[2])
+    dp_2_3 = dot_product(triplet[1], triplet[2])
+    triplets_results.append((i + 1, dp_1_2, dp_1_3, dp_2_3))
+
+pairs_results, triplets_results
