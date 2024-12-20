@@ -1,0 +1,69 @@
+from sage.all import *
+
+# Étape 1 : Définition des directions de Peres avec numérotation
+directions = [
+    vector([1,0,1]), vector([1,1,0]), vector([1,-1/sqrt(2),-1/sqrt(2)]), vector([1,1/sqrt(2),-1/sqrt(2)]),
+    vector([1,-1/sqrt(2),1/sqrt(2)]), vector([1,1/sqrt(2),1/sqrt(2)]), vector([1,-1/sqrt(2),0]), vector([1,1/sqrt(2),0]),
+    vector([1,0,0]), vector([1,0,-1/sqrt(2)]), vector([1,0,1/sqrt(2)]), vector([-1,0,1]), vector([0,-1,1]),
+    vector([0,1,1]), vector([-1/sqrt(2),0,1]), vector([1/sqrt(2),0,1]), vector([0,0,1]), vector([0,-1/sqrt(2),1]),
+    vector([0,1/sqrt(2),1]), vector([-1/sqrt(2),-1/sqrt(2),1]), vector([1/sqrt(2),-1/sqrt(2),1]),
+    vector([-1/sqrt(2),1/sqrt(2),1]), vector([1/sqrt(2),1/sqrt(2),1]), vector([-1,1,0]),
+    vector([-1/sqrt(2),1,0]), vector([1/sqrt(2),1,0]), vector([0,1,0]), vector([-1/sqrt(2),1,1/sqrt(2)]),
+    vector([-1/sqrt(2),1,-1/sqrt(2)]), vector([1/sqrt(2),1,1/sqrt(2)]), vector([1/sqrt(2),1,-1/sqrt(2)]),
+    vector([0,1,-1/sqrt(2)]), vector([0,1,1/sqrt(2)])
+]
+
+# Numérotation des directions
+indexed_directions = {i+1: v for i, v in enumerate(directions)}
+
+# Étape 2 : Matrices de transformation
+# Matrices de rotation autour des axes X, Y et Z
+rot_x = matrix([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
+rot_y = matrix([[0, 0, 1], [0, 1, 0], [-1, 0, 0]])
+rot_z = matrix([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
+
+# Inverses des rotations
+rot_x_inv = rot_x.transpose()
+rot_y_inv = rot_y.transpose()
+rot_z_inv = rot_z.transpose()
+
+# Matrices de réflexion (inversion des axes)
+refl_x = matrix([[-1, 0, 0], [0, 1, 0], [0, 0, 1]])
+refl_y = matrix([[1, 0, 0], [0, -1, 0], [0, 0, 1]])
+refl_z = matrix([[1, 0, 0], [0, 1, 0], [0, 0, -1]])
+
+# Liste complète des matrices pour les isométries (rotations + réflexions)
+matrices = [
+    matrix.identity(3),  # Identité
+    rot_x, rot_y, rot_z, rot_x_inv, rot_y_inv, rot_z_inv,
+    refl_x, refl_y, refl_z,
+    rot_x * refl_y, rot_y * refl_z, rot_z * refl_x  # Combinaisons rotation + réflexion
+]
+
+# Étape 3 : Appliquer les matrices de transformation
+def calculate_orbits(matrices, indexed_directions):
+    """
+    Applique chaque matrice à chaque direction pour calculer les orbites.
+    """
+    visited = set()
+    orbites = []
+
+    for i, v in indexed_directions.items():
+        if i not in visited:
+            orbit = set()
+            for M in matrices:
+                transformed_v = M * v  # Appliquer la matrice
+                for j, original_v in indexed_directions.items():
+                    if transformed_v == original_v:
+                        orbit.add(j)
+                        visited.add(j)
+                        break
+            orbites.append(sorted(orbit))
+    return orbites
+
+# Étape 4 : Calcul et affichage des orbites
+print("Calcul des actions des rotations et réflexions (G') :")
+orbits_G_prime = calculate_orbits(matrices, indexed_directions)
+print(f"Nombre d'orbites sous l'action des isométries complètes : {len(orbits_G_prime)}")
+for i, orbit in enumerate(orbits_G_prime, 1):
+    print(f"Orbite {i}: {orbit}")
