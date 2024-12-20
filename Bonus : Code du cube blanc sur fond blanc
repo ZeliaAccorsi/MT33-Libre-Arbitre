@@ -1,0 +1,29 @@
+ \begin{tikzpicture}[scale=8][H]
+
+% Définir les coordonnées pour les coins du cube
+\coordinate (A) at (0,0,0);
+\coordinate (B) at (1,0,0);
+\coordinate (C) at (1,1,0);
+\coordinate (D) at (0,1,0);
+\coordinate (E) at (0,0,1);
+\coordinate (F) at (1,0,1);
+\coordinate (G) at (1,1,1);
+\coordinate (H) at (0,1,1);
+
+% Dessiner les faces avec des couleurs (faces avant et arrière)
+\fill[white!30] (A) -- (B) -- (C) -- (D) -- cycle; % Base du cube (bleu clair)
+\fill[white!30] (E) -- (F) -- (G) -- (H) -- cycle; % Haut du cube (rouge clair)
+\fill[white!30] (A) -- (B) -- (F) -- (E) -- cycle; % Face avant (vert clair)
+\fill[white!30] (B) -- (C) -- (G) -- (F) -- cycle; % Face droite (jaune clair)
+\fill[white!30] (C) -- (D) -- (H) -- (G) -- cycle; % Face arrière (orange clair)
+\fill[white!30] (D) -- (A) -- (E) -- (H) -- cycle; % Face gauche (violet clair)
+
+% Dessiner les arêtes du cube avec une couleur différente
+\draw[thick, white] (A) -- (B) -- (C) -- (D) -- cycle; % Base du cube
+\draw[thick, white] (E) -- (F) -- (G) -- (H) -- cycle; % Haut du cube
+\draw[thick, white] (A) -- (E); % Verticale avant-gauche
+\draw[thick, white] (B) -- (F); % Verticale avant-droit
+\draw[thick, white] (C) -- (G); % Verticale arrière-droit
+\draw[thick, white] (D) -- (H); % Verticale arrière-gauche
+
+\end{tikzpicture}
