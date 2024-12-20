@@ -1,0 +1,66 @@
+from sage.all import *
+import itertools
+from math import sqrt
+
+# Étape 1 : Définition des directions de Peres avec numérotation
+sqrt2 = sqrt(2)
+directions = [
+    vector([1, 0, 1]), vector([1, 1, 0]), vector([1, -sqrt2/2, -sqrt2/2]), vector([1, sqrt2/2, -sqrt2/2]),
+    vector([1, -sqrt2/2, sqrt2/2]), vector([1, sqrt2/2, sqrt2/2]), vector([1, -sqrt2/2, 0]), vector([1, sqrt2/2, 0]),
+    vector([1, 0, 0]), vector([1, 0, -sqrt2/2]), vector([1, 0, sqrt2/2]), vector([-1, 0, 1]), vector([0, -1, 1]),
+    vector([0, 1, 1]), vector([-sqrt2/2, 0, 1]), vector([sqrt2/2, 0, 1]), vector([0, 0, 1]), vector([0, -sqrt2/2, 1]),
+    vector([0, sqrt2/2, 1]), vector([-sqrt2/2, -sqrt2/2, 1]), vector([sqrt2/2, -sqrt2/2, 1]),
+    vector([-sqrt2/2, sqrt2/2, 1]), vector([sqrt2/2, sqrt2/2, 1]), vector([-1, 1, 0]),
+    vector([-sqrt2/2, 1, 0]), vector([sqrt2/2, 1, 0]), vector([0, 1, 0]), vector([-sqrt2/2, 1, sqrt2/2]),
+    vector([-sqrt2/2, 1, -sqrt2/2]), vector([sqrt2/2, 1, sqrt2/2]), vector([sqrt2/2, 1, -sqrt2/2]),
+    vector([0, 1, -sqrt2/2]), vector([0, 1, sqrt2/2])
+]
+
+# Numérotation des directions
+indexed_directions = {i+1: v for i, v in enumerate(directions)}
+
+# Étape 2 : Définition des rotations (matrices)
+def generate_rotations():
+    rot_x = matrix([[1, 0, 0], [0, 0, -1], [0, 1, 0]])  # Rotation 90° autour de X
+    rot_y = matrix([[0, 0, 1], [0, 1, 0], [-1, 0, 0]])  # Rotation 90° autour de Y
+    rot_z = matrix([[0, -1, 0], [1, 0, 0], [0, 0, 1]])  # Rotation 90° autour de Z
+
+    identity = matrix.identity(3)
+    rotations_set = set()
+
+    # Générer les rotations par composition et les stocker comme tuples
+    for i, j, k in itertools.product(range(4), repeat=3):  # Répéter 0 à 3 fois chaque rotation
+        R = rot_x**i * rot_y**j * rot_z**k
+        rotations_set.add(tuple(map(tuple, R)))  # Convertir la matrice en tuple de tuples
+
+    return [matrix(r) for r in rotations_set]  # Reconvertir les tuples en matrices
+
+rotations = generate_rotations()
+
+# Étape 3 : Appliquer les matrices de transformation
+def calculate_orbits(matrices, indexed_directions):
+    """
+    Applique chaque matrice à chaque direction pour calculer les orbites.
+    """
+    visited = set()
+    orbites = []
+
+    for i, v in indexed_directions.items():
+        if i not in visited:
+            orbit = set()
+            for M in matrices:
+                transformed_v = M * v  # Appliquer la matrice
+                for j, original_v in indexed_directions.items():
+                    if transformed_v == original_v:  # Utiliser l'égalité plutôt que simplify
+                        orbit.add(j)
+                        visited.add(j)
+                        break
+            orbites.append(sorted(orbit))
+    return orbites
+
+# Étape 4 : Calcul et affichage des orbites
+print("Calcul des actions de G (rotations) :")
+orbits_G = calculate_orbits(rotations, indexed_directions)
+print(f"Nombre d'orbites : {len(orbits_G)}")
+for i, orbit in enumerate(orbits_G, 1):
+    print(f"Orbite {i}: {orbit}")
