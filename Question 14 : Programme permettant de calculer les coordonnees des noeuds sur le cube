@@ -1,0 +1,102 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from math import sqrt
+
+# Function to plot a line in 3D
+def plot_line(ax, p1, p2, color='b'):
+	   ax.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]], color=color)
+	
+# Create a 3D plot
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Define cube edges
+cube_edges = [
+	  # Lower face
+	    [(-1, -1, -1), (1, -1, -1)], [(-1, 1, -1), (1, 1, -1)],
+	    [(-1, -1, 1), (1, -1, 1)], [(-1, 1, 1), (1, 1, 1)],
+	    # Upper face
+	    [(-1, -1, -1), (-1, 1, -1)], [(1, -1, -1), (1, 1, -1)],
+	    [(-1, -1, 1), (-1, 1, 1)], [(1, -1, 1), (1, 1, 1)],
+	    # Front face
+	    [(-1, -1, -1), (-1, -1, 1)], [(1, -1, -1), (1, -1, 1)],
+	    # Back face
+	    [(-1, 1, -1), (-1, 1, 1)], [(1, 1, -1), (1, 1, 1)]
+	]
+
+# Plot cube edges
+for edge in cube_edges:
+	   plot_line(ax, edge[0], edge[1], color='b')
+
+# Define the 33 directions
+sqrt2_2 = sqrt(2) / 2
+directions = [
+	    (1, 0, 1), (1, 1, 0), (1, -sqrt2_2, -sqrt2_2),
+	    (1, sqrt2_2, -sqrt2_2), (1, -sqrt2_2, sqrt2_2), (1, sqrt2_2, sqrt2_2),
+	    (1, -sqrt2_2, 0), (1, sqrt2_2, 0), (1, 0, 0),
+	    (1, 0, -sqrt2_2), (1, 0, sqrt2_2), (-1, 0, 1),
+	    (0, -1, 1), (0, 1, 1), (-sqrt2_2, 0, 1),
+	    (sqrt2_2, 0, 1), (0, 0, 1), (0, -sqrt2_2, 1),
+	    (0, sqrt2_2, 1), (-sqrt2_2, -sqrt2_2, 1), (sqrt2_2, -sqrt2_2, 1),
+	    (-sqrt2_2, sqrt2_2, 1), (sqrt2_2, sqrt2_2, 1), (-1, 1, 0),
+	    (-sqrt2_2, 1, 0), (sqrt2_2, 1, 0), (0, 1, 0),
+	    (-sqrt2_2, 1, sqrt2_2), (-sqrt2_2, 1, -sqrt2_2), (sqrt2_2, 1, sqrt2_2),
+    (sqrt2_2, 1, -sqrt2_2), (0, 1, -sqrt2_2), (0, 1, sqrt2_2)
+]
+
+# Function to scale direction vectors to cube boundaries
+def scale_to_cube_boundary(direction):
+    # Cube boundaries are -1 to 1 for x, y, z
+    max_val = max(abs(direction[0]), abs(direction[1]), abs(direction[2]))
+    scale = 1 / max_val  # Scale the direction to fit inside the cube
+    return tuple(coord * scale for coord in direction)
+
+# Add nodes at the endpoints of the direction vectors and cube corners
+# Cube corners
+cube_corners = [
+    (-1, -1, -1), (1, -1, -1), (-1, 1, -1), (1, 1, -1),
+    (-1, -1, 1), (1, -1, 1), (-1, 1, 1), (1, 1, 1)
+]
+# Direction vector endpoints (scaled to the cube surface)
+endpoints = [scale_to_cube_boundary(direction) for direction in directions]
+
+# Plot the cube corners and direction endpoints as nodes
+for corner in cube_corners:
+    ax.scatter(corner[0], corner[1], corner[2], color='blue', s=50)  # Cube corner nodes
+for endpoint in endpoints:
+    ax.scatter(endpoint[0], endpoint[1], endpoint[2], color='green', s=30)  # Direction vector endpoints
+
+    # Convert coordinates to symbolic representation with proper spacing
+    coords_str = []
+    for coord in endpoint:
+        if abs(coord - sqrt2_2) < 0.01:  # Approximation for sqrt(2)/2
+            coords_str.append(r'$\frac{\sqrt{2}}{2}$')
+        elif abs(coord + sqrt2_2) < 0.01:  # Approximation for -sqrt(2)/2
+            coords_str.append(r'-$\left(\frac{\sqrt{2}}{2}\right)$')  # Added parentheses here
+        else:
+            # Convert coordinate to float and display it
+            coord_float = float(coord)
+            if coord_float < 0:  # Handle negative coordinates
+                coords_str.append(f'-  {abs(coord_float):.2f}')  # Space after minus
+            else:
+                coords_str.append(f'{coord_float:.2f}')  # Format positive numbers
+
+    # Add the text label with the symbolic coordinates
+    ax.text(endpoint[0], endpoint[1], endpoint[2], 
+            f'({coords_str[0]}, {coords_str[1]}, {coords_str[2]})', 
+            color='black', fontsize=8)  # Regular font size
+
+# Set labels for axes
+ax.set_xlabel('Axe X')
+ax.set_ylabel('Axe Y')
+ax.set_zlabel('Axe Z')
+
+# Set the plot title
+ax.set_title('Le cube et les coordonées des différents noeuds')
+
+# Set the viewing angle to get a clear view of x, y, z axes
+ax.view_init(elev=30, azim=30)  # Elevation and azimuthal angle for better visualization
+
+# Show the plot
+plt.show()
