@@ -1,0 +1,53 @@
+# Création d'un cube avec des arêtes (utilisation de segments)
+edges = [
+    line3d([(-1, -1, -1), (1, -1, -1)]), line3d([(-1, 1, -1), (1, 1, -1)]),  # Face inférieure
+    line3d([(-1, -1, 1), (1, -1, 1)]), line3d([(-1, 1, 1), (1, 1, 1)]),     # Face supérieure
+    line3d([(-1, -1, -1), (-1, 1, -1)]), line3d([(1, -1, -1), (1, 1, -1)]),  # Côtés inférieurs
+    line3d([(-1, -1, 1), (-1, 1, 1)]), line3d([(1, -1, 1), (1, 1, 1)]),     # Côtés supérieurs
+    line3d([(-1, -1, -1), (-1, -1, 1)]), line3d([(1, -1, -1), (1, -1, 1)]),  # Face avant
+    line3d([(-1, 1, -1), (-1, 1, 1)]), line3d([(1, 1, -1), (1, 1, 1)])       # Face arrière
+]
+
+# Les 13 vecteurs
+directions = [
+    (1, 0, 0),  # v1 (x direction)
+    (0, 1, 0),  # v2 (y direction)
+    (0, 0, 1),  # v3 (z direction)
+    (1, 1, 0),  # v4
+    (1, -1, 0), # v5
+    (1, 0, 1),  # v6
+    (1, 0, -1), # v7
+    (0, 1, 1),  # v8
+    (0, 1, -1), # v9
+    (1, 1, 1),  # v10
+    (1, -1, -1),# v11
+    (1, -1, 1), # v12
+    (1, 1, -1)  # v13
+]
+
+# Facteur d'extension des flèches
+scale_factor = 1.3  # Augmentez cette valeur pour que les flèches soient encore plus longues
+
+# Création des vecteurs avec des couleurs différentes
+vectors = []
+for p in directions:
+    if p == (1, 0, 0):  # Vecteur x
+        color = 'cyan'  # Couleur pour v1 (x)
+    elif p == (0, 1, 0):  # Vecteur y
+        color = 'cyan'  # Couleur pour v2 (y)
+    elif p == (0, 0, 1):  # Vecteur z
+        color = 'cyan'  # Couleur pour v3 (z)
+    elif p in [(1, 1, 0), (1, -1, 0), (1, 0, 1), (1, 0, -1), (0, 1, 1), (0, 1, -1)]:
+        color = 'red'  # 6 axes passant par les centres des arêtes opposées
+    else:  # Les 4 axes passant par les sommets opposés
+        color = 'lightgreen'  # 4 axes passant par les sommets opposés
+    vectors.append(arrow3d((0, 0, 0), (scale_factor*p[0], scale_factor*p[1], scale_factor*p[2]), color=color, width=0.5))
+
+# Ajout des étiquettes pour chaque point
+labels = [text3d(f"v{i+1}", p, color='black', fontsize=18) for i, p in enumerate(directions)]
+
+# Combinaison des arêtes du cube, des vecteurs et des étiquettes
+scene = sum(edges) + sum(vectors) + sum(labels)
+
+# Affichage de la scène
+scene.show(frame=False, axes=True, figsize=[8, 8])
