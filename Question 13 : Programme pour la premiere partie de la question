@@ -12,6 +12,78 @@ def verify_condition_i(gamma, directions, triplets):
             return False
     return True
 
+# Entrer ici vos 33 directions
+directions = [
+   vector([1, 0, 1]), vector([1, 1, 0]), vector([1, -1/sqrt(2), -1/sqrt(2)]),
+vector([1, 1/sqrt(2), -1/sqrt(2)]), vector([1, -1/sqrt(2), 1/sqrt(2)]), vector([1, 1/sqrt(2), 1/sqrt(2)]),
+vector([1, -1/sqrt(2), 0]), vector([1, 1/sqrt(2), 0]), vector([1, 0, 0]),
+vector([1, 0, -1/sqrt(2)]), vector([1, 0, 1/sqrt(2)]), vector([-1, 0, 1]),
+vector([0, -1, 1]), vector([0, 1, 1]), vector([-1/sqrt(2), 0, 1]),
+vector([1/sqrt(2), 0, 1]), vector([0, 0, 1]), vector([0, -1/sqrt(2), 1]),
+vector([0, 1/sqrt(2), 1]), vector([-1/sqrt(2), -1/sqrt(2), 1]), vector([1/sqrt(2), -1/sqrt(2), 1]),
+vector([-1/sqrt(2), 1/sqrt(2), 1]), vector([1/sqrt(2), 1/sqrt(2), 1]),
+vector([-1, 1, 0]), vector([-1/sqrt(2), 1, 0]), vector([1/sqrt(2), 1, 0]),
+vector([0, 1, 0]), vector([-1/sqrt(2), 1, 1/sqrt(2)]),
+vector([-1/sqrt(2), 1, -1/sqrt(2)]), vector([1/sqrt(2), 1, 1/sqrt(2)]),
+vector([1/sqrt(2), 1, -1/sqrt(2)]), vector([0, 1, -1/sqrt(2)]),
+vector([0, 1, 1/sqrt(2)]) 
+]
+
+# Entrer ici vos 16 triplets orthogonaux
+triplets = [
+     [(1, 0, 1), (-1, 0, 1), (0, 1, 0)],
+    [(1, 0, 1), (-1/sqrt(2), 1, 1/sqrt(2)), (1/sqrt(2), 1, -1/sqrt(2))],
+    [(1, 1, 0), (0, 0, 1), (-1, 1, 0)],
+    [(1, 1, 0), (1/sqrt(2), -1/sqrt(2), 1), (-1/sqrt(2), 1/sqrt(2), 1)],
+    [(1, -1/sqrt(2), -1/sqrt(2)), (1, 1/sqrt(2), 1/sqrt(2)), (0, -1, 1)],
+    [(1, 1/sqrt(2), -1/sqrt(2)), (1, -1/sqrt(2), 1/sqrt(2)), (0, 1, 1)],
+    [(1, -1/sqrt(2), 0), (0, 0, 1), (1/sqrt(2), 1, 0)],
+    [(1, 1/sqrt(2), 0), (0, 0, 1), (-1/sqrt(2), 1, 0)],
+    [(1, 0, 0), (0, -1, 1), (0, 1, 1)],
+    [(1, 0, 0), (0, 0, 1), (0, 1, 0)],
+    [(1, 0, 0), (0, -1/sqrt(2), 1), (0, 1, 1/sqrt(2))],
+    [(1, 0, 0), (0, 1/sqrt(2), 1), (0, 1, -1/sqrt(2))],
+    [(1, 0, -1/sqrt(2)), (1/sqrt(2), 0, 1), (0, 1, 0)],
+    [(1, 0, 1/sqrt(2)), (-1/sqrt(2), 0, 1), (0, 1, 0)],
+    [(-1, 0, 1), (-1/sqrt(2), 1, -1/sqrt(2)), (1/sqrt(2), 1, 1/sqrt(2))],
+    [(-1/sqrt(2), -1/sqrt(2), 1), (1/sqrt(2), 1/sqrt(2), 1), (-1, 1, 0)]
+
+]
+
+# Génération exhaustive des applications gamma
+print("Recherche d'une application gamma satisfaisant la condition (i)...")
+for values in itertools.product([0, 1], repeat=len(directions)):
+    # Créer une application gamma comme dictionnaire
+    gamma = {tuple(directions[i]): values[i] for i in range(len(directions))}
+    
+    # Vérifier la condition (i)
+    if verify_condition_i(gamma, directions, triplets):
+        print("Une application gamma valide a été trouvée :")
+        for d in directions:
+            print(f"gamma{tuple(d)} = {gamma[tuple(d)]}")
+        break
+else:
+    print("Aucune application gamma ne satisfait la condition (i).")
+
+# On ajoute l'echantillonage du programme : 
+
+avec échantillonnage
+
+
+import itertools 
+
+def verify_condition_i(gamma, directions, triplets):
+    """
+    Vérifie la condition (i) pour les triplets orthogonaux.
+    gamma : dictionnaire {direction : valeur 0 ou 1}
+    directions : liste des directions
+    triplets : liste des triplets (chaque triplet est une liste de 3 directions)
+    """
+    for triplet in triplets:
+        if sum(gamma[d] for d in triplet) != 2:
+            return False
+    return True
+
 # Une partie des 33 directions
 directions = [
     vector([1, 0, 1]), vector([1, 1, 0]), vector([0, 0, 1]), vector([-1, 1, 0]), vector([-1/sqrt(2), 1, 1/sqrt(2)]), vector([1/sqrt(2), 1, -1/sqrt(2)]), 
@@ -38,75 +110,3 @@ for values in itertools.product([0, 1], repeat=len(directions)):
 else:
     print("Aucune application gamma ne satisfait la condition (i).")
 
-
-
-
-
-
-
-
-directions = [
-    vector([1, 0, 1]), vector([1, 1, 0]), vector([1, -1/sqrt(2), -1/sqrt(2)]),
-    vector([1, 1/sqrt(2), -1/sqrt(2)]), vector([1, -1/sqrt(2), 1/sqrt(2)]),
-    vector([1, 1/sqrt(2), 1/sqrt(2)]), vector([1, -1/sqrt(2), 0]),
-    vector([1, 1/sqrt(2), 0]), vector([1, 0, 0]), vector([1, 0, -1/sqrt(2)]),
-    vector([1, 0, 1/sqrt(2)]), vector([-1, 0, 1]), vector([0, -1, 1]),
-    vector([0, 1, 1]), vector([-1/sqrt(2), 0, 1]), vector([1/sqrt(2), 0, 1]),
-    vector([0, 0, 1]), vector([0, -1/sqrt(2), 1]), vector([0, 1/sqrt(2), 1]),
-    vector([-1/sqrt(2), -1/sqrt(2), 1]), vector([1/sqrt(2), -1/sqrt(2), 1]),
-    vector([-1/sqrt(2), 1/sqrt(2), 1]), vector([1/sqrt(2), 1/sqrt(2), 1]),
-    vector([-1, 1, 0]), vector([-1/sqrt(2), 1, 0]), vector([1/sqrt(2), 1, 0]),
-    vector([0, 1, 0]), vector([-1/sqrt(2), 1, 1/sqrt(2)]),
-    vector([-1/sqrt(2), 1, -1/sqrt(2)]), vector([1/sqrt(2), 1, 1/sqrt(2)]),
-    vector([1/sqrt(2), 1, -1/sqrt(2)]), vector([0, 1, -1/sqrt(2)]),
-    vector([0, 1, 1/sqrt(2)])
-]
-
-# Fonction pour vérifier la condition (i) : somme == 2 pour chaque triplet orthogonal donné
-def verifie_condition_i(gamma, triplets):
-    for triplet in triplets:
-        if sum(gamma[tuple(v)] for v in triplet) != 2:
-            return False
-    return True
-
-# Parcours de toutes les applications gamma : directions -> {0, 1}
-from itertools import product
-
-def trouve_gamma_verifiant_i(directions, triplets):
-    # On parcourt toutes les applications possibles
-    for valeurs in product([0, 1], repeat=len(directions)):
-        gamma = {tuple(directions[i]): valeurs[i] for i in range(len(directions))}
-        
-        # Vérification de la condition (i)
-        if verifie_condition_i(gamma, triplets):
-            print("Une application gamma qui satisfait la condition (i) :")
-            for d in directions:
-                print(f"gamma({d}) = {gamma[d]}")
-            return gamma
-    print("Aucune application ne satisfait la condition (i).")
-    return None
-
-# Définition des 16 triplets orthogonaux
-triplets_orthogonaux = [
-    (vector([1, 0, 0]), vector([0, 0, 1]), vector([0, 1, 0])),
-    (vector([1, 0, 0]), vector([0, 1, -sqrt(2)/2]), vector([0, sqrt(2)/2, 1])),
-    (vector([1, 0, 0]), vector([0, -1, 1]), vector([0, 1, 1])),
-    (vector([1, 0, 0]), vector([0, 1, sqrt(2)/2]), vector([0, -sqrt(2)/2, 1])),
-    (vector([0, 1, 0]), vector([1, 0, sqrt(2)/2]), vector([-sqrt(2)/2, 0, 1])),
-    (vector([0, 1, 0]), vector([1, 0, 1]), vector([-1, 0, 1])),
-    (vector([0, 1, 0]), vector([1, 0, -sqrt(2)/2]), vector([sqrt(2)/2, 0, 1])),
-    (vector([0, 1, 1]), vector([0, -1, 1]), vector([1, 0, 0])),
-    (vector([0, 0, 1]), vector([1, sqrt(2)/2, 0]), vector([-sqrt(2)/2, 1, 0])),
-    (vector([0, 0, 1]), vector([1, sqrt(2)/2, 0]), vector([-sqrt(2)/2, 1, 0])),
-    (vector([-1, 1, 0]), vector([-sqrt(2)/2, -sqrt(2)/2, 1]), vector([sqrt(2)/2, sqrt(2)/2, 1])),
-    (vector([0, 1, 1]), vector([1, -sqrt(2)/2, sqrt(2)/2]), vector([1, sqrt(2)/2, -sqrt(2)/2])),
-    (vector([1, 0, 1]), vector([-sqrt(2)/2, 1, sqrt(2)/2]), vector([sqrt(2)/2, 1, -sqrt(2)/2])),
-    (vector([0, -1, 1]), vector([1, sqrt(2)/2, sqrt(2)/2]), vector([1, -sqrt(2)/2, -sqrt(2)/2])),
-    (vector([1, 1, 0]), vector([-sqrt(2)/2, sqrt(2)/2, 1]), vector([sqrt(2)/2, -sqrt(2)/2, 1])),
-    (vector([-1, 0, 1]), vector([sqrt(2)/2, 1, sqrt(2)/2]), vector([-sqrt(2)/2, 1, -sqrt(2)/2]))
-]
-
-# Exécution
-trouve_gamma_verifiant_i(directions, triplets_orthogonaux)
-
-C’est un programme qui marche mais que j’ai pas pu faire tourner jusqu’au bout.
