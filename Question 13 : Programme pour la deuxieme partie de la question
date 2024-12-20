@@ -62,9 +62,8 @@ if __name__ == "__main__":
     parcours_applications()
 
 
-# Pour pouvoir estimer le temps nécessaire j’ai utilisé un échantillon de 5 vecteurs, avec leur paire et leur triplet associés. 
-Voici le programme
-#Programme adapté à l’échantillon 
+# Ajoutons l'échantillonnage 
+
 
 from itertools import product
 from math import sqrt
