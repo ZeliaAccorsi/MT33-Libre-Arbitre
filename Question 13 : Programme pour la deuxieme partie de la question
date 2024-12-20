@@ -1,0 +1,120 @@
+from itertools import product
+from math import sqrt
+
+# Ensemble des 33 directions definies explicitement
+directions = [
+    [1, 0, 1], [1, 1, 0], [1, -1/sqrt(2), -1/sqrt(2)], [1, 1/sqrt(2), -1/sqrt(2)],
+    [1, -1/sqrt(2), 1/sqrt(2)], [1, 1/sqrt(2), 1/sqrt(2)], [1, -1/sqrt(2), 0], [1, 1/sqrt(2), 0],
+    [1, 0, 0], [1, 0, -1/sqrt(2)], [1, 0, 1/sqrt(2)], [-1, 0, 1], [0, -1, 1], [0, 1, 1],
+    [-1/sqrt(2), 0, 1], [1/sqrt(2), 0, 1], [0, 0, 1], [0, -1/sqrt(2), 1], [0, 1/sqrt(2), 1],
+    [-1/sqrt(2), -1/sqrt(2), 1], [1/sqrt(2), -1/sqrt(2), 1], [-1/sqrt(2), 1/sqrt(2), 1],
+    [1/sqrt(2), 1/sqrt(2), 1], [-1, 1, 0], [-1/sqrt(2), 1, 0], [1/sqrt(2), 1, 0], [0, 1, 0],
+    [-1/sqrt(2), 1, 1/sqrt(2)], [-1/sqrt(2), 1, -1/sqrt(2)], [1/sqrt(2), 1, 1/sqrt(2)],
+    [1/sqrt(2), 1, -1/sqrt(2)], [0, 1, -1/sqrt(2)], [0, 1, 1/sqrt(2)]
+]
+
+# Les 16 triplets orthogonaux
+triplets_orthogonaux = [
+    (0, 11, 27), (1, 16, 24), (2, 5, 12), (6, 16, 25), (8, 12, 13),
+    (8, 17, 18), (9, 15, 27), (11, 28, 30), (0, 28, 31), (1, 19, 20),
+    (3, 4, 13), (7, 16, 25), (8, 16, 27), (8, 18, 33), (10, 14, 27),
+    (19, 22, 24)
+]
+
+# Les 24 paires orthogonales
+paires_orthogonales = [
+    (0, 9), (1, 2), (3, 10), (4, 13), (5, 14), (6, 15), (7, 16), (8, 17),
+    (9, 18), (10, 19), (11, 20), (12, 21), (13, 22), (14, 23), (15, 24),
+    (16, 25), (17, 26), (18, 27), (19, 28), (20, 29), (21, 30), (22, 31),
+    (23, 32), (24, 33)
+]
+
+# Fonction pour verifier les conditions (i) et (ii) pour une application gamma
+def verifie_conditions(gamma):
+    # Condition (i) : somme sur les triplets = 2
+    for (d, d_prime, d_seconde) in triplets_orthogonaux:
+        if gamma[d] + gamma[d_prime] + gamma[d_seconde] != 2:
+            return False
+
+    # Condition (ii) : paires orthogonales (gamma[d], gamma[d']) != (0, 0)
+    for (d, d_prime) in paires_orthogonales:
+        if gamma[d] == 0 and gamma[d_prime] == 0:
+            return False
+    
+    return True
+
+# Parcours de toutes les applications possibles (gamma)
+def parcours_applications():
+    total_applications = 2 ** len(directions)
+    print(f"Nombre total d'applications : {total_applications}")
+
+    for gamma_values in product([0, 1], repeat=len(directions)):
+        gamma = dict(zip(range(len(directions)), gamma_values))
+        
+        if verifie_conditions(gamma):
+            print("Application 101 trouvee :", gamma)
+            return gamma
+    
+    print("Aucune application 101 n'a ete trouvee.")
+
+# Lancement du programme
+if __name__ == "__main__":
+    parcours_applications()
+
+
+# Pour pouvoir estimer le temps nécessaire j’ai utilisé un échantillon de 5 vecteurs, avec leur paire et leur triplet associés. 
+Voici le programme
+#Programme adapté à l’échantillon 
+
+from itertools import product
+from math import sqrt
+import time
+
+# Ensemble des 5 directions (sous-ensemble pour test)
+directions_5 = [
+    [0, 0, 1], [1, -1/2*sqrt(2), 0], [1/2*sqrt(2), 1, 0], [1, 1/sqrt(2), -1/sqrt(2)],
+    [-1/2*sqrt(2), 1, 0]
+]
+
+# Les triplets orthogonaux pour les 5 vecteurs
+test_triplets_orthogonaux = [
+    (0, 1, 2)
+]
+
+# Les paires orthogonales pour les 5 vecteurs
+test_paires_orthogonales = [
+    (3, 4)
+]
+
+# Fonction pour verifier les conditions (i) et (ii) pour une application gamma avec 5 vecteurs
+def verifie_conditions_5(gamma):
+    # Condition (i) : somme sur les triplets = 2
+    for (d, d_prime, d_seconde) in test_triplets_orthogonaux:
+        if gamma[d] + gamma[d_prime] + gamma[d_seconde] != 2:
+            return False
+
+    # Condition (ii) : paires orthogonales (gamma[d], gamma[d']) != (0, 0)
+    for (d, d_prime) in test_paires_orthogonales:
+        if gamma[d] == 0 and gamma[d_prime] == 0:
+            return False
+    
+    return True
+
+# Fonction pour tester toutes les applications possibles avec 5 vecteurs
+def parcours_applications_5():
+    total_applications_5 = 2 ** len(directions_5)
+    print(f"Nombre total d'applications pour 5 vecteurs : {total_applications_5}")
+    
+    start_time = time.time()
+    for gamma_values in product([0, 1], repeat=len(directions_5)):
+        gamma = dict(zip(range(len(directions_5)), gamma_values))
+        if verifie_conditions_5(gamma):
+            print("Application valide trouvee :", gamma)
+    elapsed_time = time.time() - start_time
+
+    print(f"Temps pour parcourir toutes les applications des 5 vecteurs : {elapsed_time:.6f} secondes")
+    return elapsed_time
+
+# Programme principal
+if __name__ == "__main__":
+    parcours_applications_5()
