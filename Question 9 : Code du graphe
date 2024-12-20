@@ -1,0 +1,111 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+from itertools import combinations
+from math import sqrt
+
+# Définition des 33 directions de Peres (normalisées)
+directions = [
+    [1, 0, 1], 
+    [1, 1, 0], 
+    [1, -sqrt(2)/2, -sqrt(2)/2],
+    [1, sqrt(2)/2, -sqrt(2)/2],
+    [1, -sqrt(2)/2, sqrt(2)/2],
+    [1, sqrt(2)/2, sqrt(2)/2],
+    [1, -sqrt(2)/2, 0],
+    [1, sqrt(2)/2, 0],
+    [1, 0, 0],
+    [1, 0, -sqrt(2)/2],
+    [1, 0, sqrt(2)/2],
+    [-1, 0, 1],
+    [0, -1, 1],
+    [0, 1, 1],
+    [-sqrt(2)/2, 0, 1],
+    [sqrt(2)/2, 0, 1],
+    [0, 0, 1],
+    [0, -sqrt(2)/2, 1],
+    [0, sqrt(2)/2, 1],
+    [-sqrt(2)/2, -sqrt(2)/2, 1],
+    [sqrt(2)/2, -sqrt(2)/2, 1],
+    [-sqrt(2)/2, sqrt(2)/2, 1],
+    [sqrt(2)/2, sqrt(2)/2, 1],
+    [-1, 1, 0],
+    [-sqrt(2)/2, 1, 0],
+    [sqrt(2)/2, 1, 0],
+    [0, 1, 0],
+    [-sqrt(2)/2, 1, sqrt(2)/2],
+    [-sqrt(2)/2, 1, -sqrt(2)/2],
+    [sqrt(2)/2, 1, sqrt(2)/2],
+    [sqrt(2)/2, 1, -sqrt(2)/2],
+    [0, 1, -sqrt(2)/2],
+    [0, 1, sqrt(2)/2]
+]
+
+# Exemple de triplets orthogonaux
+triplets = [
+    [[1.0, 0.0, 1.0], [-1.0, 0.0, 1.0], [0.0, 1.0, 0.0]],
+    [[1.0, 0.0, 1.0], [-0.7071067811865476, 1.0, 0.7071067811865476], [0.7071067811865476, 1.0, -0.7071067811865476]],
+    [[1.0, 1.0, 0.0], [0.0, 0.0, 1.0], [-1.0, 1.0, 0.0]],
+    [[1.0, 1.0, 0.0], [0.7071067811865476, -0.7071067811865476, 1.0], [-0.7071067811865476, 0.7071067811865476, 1.0]],
+    [[1.0, -0.7071067811865476, -0.7071067811865476], [1.0, 0.7071067811865476, 0.7071067811865476], [0.0, -1.0, 1.0]],
+    [[1.0, 0.7071067811865476, -0.7071067811865476], [1.0, -0.7071067811865476, 0.7071067811865476], [0.0, 1.0, 1.0]],
+    [[1.0, -0.7071067811865475, 0.0], [0.0, 0.0, 1.0], [0.7071067811865475, 1.0, 0.0]],
+    [[1.0, 0.7071067811865475, 0.0], [0.0, 0.0, 1.0], [-0.7071067811865475, 1.0, 0.0]],
+    [[1.0, 0.0, 0.0], [0.0, -1.0, 1.0], [0.0, 1.0, 1.0]],
+    [[1.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 0.0]],
+    [[1.0, 0.0, 0.0], [0.0, -0.7071067811865475, 1.0], [0.0, 1.0, 0.7071067811865475]],
+    [[1.0, 0.0, 0.0], [0.0, 0.7071067811865475, 1.0], [0.0, 1.0, -0.7071067811865475]],
+    [[1.0, 0.0, -0.7071067811865475], [0.7071067811865475, 0.0, 1.0], [0.0, 1.0, 0.0]],
+    [[1.0, 0.0, 0.7071067811865475], [-0.7071067811865475, 0.0, 1.0], [0.0, 1.0, 0.0]],
+    [[-1.0, 0.0, 1.0], [-0.7071067811865476, 1.0, -0.7071067811865476], [0.7071067811865476, 1.0, 0.7071067811865476]],
+    [[-0.7071067811865476, -0.7071067811865476, 1.0], [0.7071067811865476, 0.7071067811865476, 1.0], [-1.0, 1.0, 0.0]]
+]
+
+
+
+# Fonction pour vérifier l'orthogonalité entre deux vecteurs
+def is_orthogonal(d1, d2):
+    return round(sum([x * y for x, y in zip(d1, d2)]), 8) == 0
+
+# Fonction pour vérifier si deux directions font partie d'un triplet orthogonal
+def in_triplet(d1, d2):
+    for triplet in triplets:
+        if d1 in triplet and d2 in triplet:
+            return True
+    return False
+
+# Création du graphe
+G = nx.Graph()
+
+# Ajouter des nœuds pour chaque direction
+for idx, direction in enumerate(directions):
+    G.add_node(idx, direction=direction)
+
+# Ajouter des arêtes entre les directions qui sont orthogonales ou qui font partie d'un triplet orthogonal
+for i, j in combinations(range(len(directions)), 2):
+    if is_orthogonal(directions[i], directions[j]) or in_triplet(directions[i], directions[j]):
+        G.add_edge(i, j)
+
+# Visualisation du graphe
+options = {"font_size": 8, "node_size": 100, "node_color": "lightblue",
+           "linewidths": 1, "width": 0.5}
+
+# Position des nœuds (disposition circulaire)
+pos = nx.circular_layout(G)
+plt.figure(figsize=(8, 8))
+
+# Tracer le graphe
+nx.draw_networkx(G, pos, **options)
+
+# Ajouter des labels pour les nœuds
+labels = {i: f"Direction {i+1}" for i in range(len(directions))}
+nx.draw_networkx_labels(G, pos, labels, font_size=8)
+
+# Définir les marges et afficher le graphe
+plt.title("Graphe des Directions de Peres")
+plt.axis("off")
+plt.show()
+
+# Afficher le degré de chaque nœud
+degre = G.degree()
+for node, degree in degre:
+    print(f"Degré du nœud {node+1} (Direction {node+1}): {degree}")
