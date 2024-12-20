@@ -1,0 +1,65 @@
+# Définir les rotations fondamentales du cube autour des axes x, y, z
+def rotation_x(theta):
+    """Rotation d'angle theta autour de l'axe x."""
+    return matrix([[1, 0, 0],
+                   [0, cos(theta), -sin(theta)],
+                   [0, sin(theta), cos(theta)]])
+
+def rotation_y(theta):
+    """Rotation d'angle theta autour de l'axe y."""
+    return matrix([[cos(theta), 0, sin(theta)],
+                   [0, 1, 0],
+                   [-sin(theta), 0, cos(theta)]])
+
+def rotation_z(theta):
+    """Rotation d'angle theta autour de l'axe z."""
+    return matrix([[cos(theta), -sin(theta), 0],
+                   [sin(theta), cos(theta), 0],
+                   [0, 0, 1]])
+
+# Générer les rotations de π/2 autour de x, y, z
+Rx = rotation_x(pi/2)
+Ry = rotation_y(pi/2)
+Rz = rotation_z(pi/2)
+
+# Générer toutes les rotations du groupe G
+G = [identity_matrix(3)]  # Contient l'identité
+for i in range(4):
+    for j in range(4):
+        for k in range(4):
+            g = Rx**i * Ry**j * Rz**k
+            if g not in G:
+                G.append(g)
+
+print("Nombre d'éléments dans G :", len(G))  # Devrait être 24 (groupe des rotations du cube)
+
+# Directions de Peres : les vecteurs points dans l'espace
+directions = [(x, y, z) for x in [-1, 0, 1] for y in [-1, 0, 1] for z in [-1, 0, 1] 
+              if (x, y, z) != (0, 0, 0)]  # 26 directions (les sommets + milieux des faces)
+
+# Numéroter les directions
+direction_dict = {i+1: vector(v) for i, v in enumerate(directions)}
+print("Numérotation des directions de Peres :")
+print(direction_dict)
+
+# Appliquer les rotations sur les directions
+def action_on_directions(rotation, directions):
+    """Retourne les nouvelles positions des directions après une rotation."""
+    return {k: rotation * v for k, v in directions.items()}
+
+# Calcul des orbites sous G
+def compute_orbits(group, directions):
+    """Calcule les orbites des directions sous l'action d'un groupe."""
+    visited = set()
+    orbits = []
+    for i in directions:
+        if i not in visited:
+            orbit = set()
+            for g in group:
+                new_dir = tuple(g * directions[i])
+                orbit.add(new_dir)
+            orbits.append(orbit)
+            visited.update(orbit)
+    return orbits
+
+# Calculer les orbites pour G
