@@ -1,6 +1,14 @@
- \begin{tikzpicture}[scale=8][H]
+\usepackage{xcolor} % For colors
+\usepackage{tikz}   % For TikZ drawings
 
-% Définir les coordonnées pour les coins du cube
+\begin{document}
+
+% Set the page background color to light gray
+\pagecolor{gray!6}
+
+\begin{tikzpicture}[scale=8]
+
+% Define the coordinates for the corners of the cube
 \coordinate (A) at (0,0,0);
 \coordinate (B) at (1,0,0);
 \coordinate (C) at (1,1,0);
@@ -10,20 +18,23 @@
 \coordinate (G) at (1,1,1);
 \coordinate (H) at (0,1,1);
 
-% Dessiner les faces avec des couleurs (faces avant et arrière)
-\fill[white!30] (A) -- (B) -- (C) -- (D) -- cycle; % Base du cube (bleu clair)
-\fill[white!30] (E) -- (F) -- (G) -- (H) -- cycle; % Haut du cube (rouge clair)
-\fill[white!30] (A) -- (B) -- (F) -- (E) -- cycle; % Face avant (vert clair)
-\fill[white!30] (B) -- (C) -- (G) -- (F) -- cycle; % Face droite (jaune clair)
-\fill[white!30] (C) -- (D) -- (H) -- (G) -- cycle; % Face arrière (orange clair)
-\fill[white!30] (D) -- (A) -- (E) -- (H) -- cycle; % Face gauche (violet clair)
+% Draw the cube faces with colors
+\fill[white!30] (A) -- (B) -- (C) -- (D) -- cycle; % Base of the cube
+\fill[white!30] (E) -- (F) -- (G) -- (H) -- cycle; % Top of the cube
+\fill[white!30] (A) -- (B) -- (F) -- (E) -- cycle; % Front face
+\fill[white!30] (B) -- (C) -- (G) -- (F) -- cycle; % Right face
+\fill[white!30] (C) -- (D) -- (H) -- (G) -- cycle; % Back face
+\fill[white!30] (D) -- (A) -- (E) -- (H) -- cycle; % Left face
 
-% Dessiner les arêtes du cube avec une couleur différente
-\draw[thick, white] (A) -- (B) -- (C) -- (D) -- cycle; % Base du cube
-\draw[thick, white] (E) -- (F) -- (G) -- (H) -- cycle; % Haut du cube
-\draw[thick, white] (A) -- (E); % Verticale avant-gauche
-\draw[thick, white] (B) -- (F); % Verticale avant-droit
-\draw[thick, white] (C) -- (G); % Verticale arrière-droit
-\draw[thick, white] (D) -- (H); % Verticale arrière-gauche
+% Draw the edges of the cube
+\draw[thick, gray!8] (A) -- (B) -- (C) -- (D) -- cycle; % Base of the cube
+\draw[thick, gray!8] (E) -- (F) -- (G) -- (H) -- cycle; % Top of the cube
+\draw[thick, gray!8] (A) -- (E); % Front-left vertical edge
+\draw[thick, gray!8] (B) -- (F); % Front-right vertical edge
+\draw[thick, gray!8] (C) -- (G); % Back-right vertical edge
+\draw[thick, gray!8] (D) -- (H); % Back-left vertical edge
 
 \end{tikzpicture}
+
+\newpage
+\pagecolor{white}
