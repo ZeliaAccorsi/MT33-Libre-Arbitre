@@ -1,95 +1,89 @@
-# Define the points of the original cube (centered at the origin)
+# Définir les points du cube original (centré à l'origine)
 original_points = [
-	(1, 1, 1),
-	(1, 1, -1),
-	(1, -1, 1),
-	(1, -1, -1),
-	(-1, 1, 1),
-	(-1, 1, -1),
-	(-1, -1, 1),
-	(-1, -1, -1)
+    (1, 1, 1), (1, 1, -1), (1, -1, 1), (1, -1, -1),
+    (-1, 1, 1), (-1, 1, -1), (-1, -1, 1), (-1, -1, -1)
 ]
- 
-# Create the rotation matrices for 45 degrees around each axis
+
+# Créer les matrices de rotation pour 45 degrés autour de chaque axe
 rotation_x = Matrix([
-	[1, 0, 0],
-	[0, cos(pi/4), -sin(pi/4)],
-	[0, sin(pi/4), cos(pi/4)]
+    [1, 0, 0],
+    [0, cos(pi/4), -sin(pi/4)],
+    [0, sin(pi/4), cos(pi/4)]
 ])
- 
+
 rotation_y = Matrix([
-	[cos(pi/4), 0, sin(pi/4)],
-	[0, 1, 0],
-	[-sin(pi/4), 0, cos(pi/4)]
+    [cos(pi/4), 0, sin(pi/4)],
+    [0, 1, 0],
+    [-sin(pi/4), 0, cos(pi/4)]
 ])
- 
+
 rotation_z = Matrix([
-	[cos(pi/4), -sin(pi/4), 0],
-	[sin(pi/4), cos(pi/4), 0],
-	[0, 0, 1]
+    [cos(pi/4), -sin(pi/4), 0],
+    [sin(pi/4), cos(pi/4), 0],
+    [0, 0, 1]
 ])
- 
-# Apply rotations to the original cube points
+
+# Appliquer les rotations aux points du cube original
 rotated_points_x = [rotation_x * vector(p) for p in original_points]
 rotated_points_y = [rotation_y * vector(p) for p in original_points]
 rotated_points_z = [rotation_z * vector(p) for p in original_points]
- 
-# Function to create the lines connecting the points of a cube
+
+# Fonction pour créer les lignes connectant les points d'un cube
 def create_lines(points, color, opacity=1):
-	lines = []
-	# Define the 12 edges of the cube (connecting the points)
-	edges = [
-    	(0, 1), (0, 2), (0, 4), (1, 3), (1, 5),
-    	(2, 3), (2, 6), (3, 7), (4, 5), (4, 6),
-    	(5, 7), (6, 7)
-	]
-	for start, end in edges:
-    	lines.append(line3d([points[start], points[end]], color=color, opacity=opacity))
-	return lines
- 
-# Create lines for the original and rotated cubes
-original_cube_lines = create_lines(original_points, color='blue', opacity=1)  # Full opacity for the original cube
-rotated_cube_x_lines = create_lines(rotated_points_x, color='red', opacity=0.5)  # Slightly transparent for rotated cubes
-rotated_cube_y_lines = create_lines(rotated_points_y, color='green', opacity=0.5)  # Slightly transparent for rotated cubes
-rotated_cube_z_lines = create_lines(rotated_points_z, color='purple', opacity=0.5)  # Slightly transparent for rotated cubes
- 
-# Create the scene by combining all the line3d objects manually
+    lines = []
+    # Définir les 12 arêtes du cube (connectant les points)
+    edges = [
+        (0, 1), (0, 2), (0, 4), (1, 3), (1, 5),
+        (2, 3), (2, 6), (3, 7), (4, 5), (4, 6),
+        (5, 7), (6, 7)
+    ]
+    for start, end in edges:
+        lines.append(line3d([points[start], points[end]], color=color, opacity=opacity))
+    return lines
+
+# Créer les lignes pour les cubes original et rotatifs
+original_cube_lines = create_lines(original_points, color='blue', opacity=1)  # Opacité totale pour le cube original
+rotated_cube_x_lines = create_lines(rotated_points_x, color='red', opacity=0.5)  # Légèrement transparent pour les cubes rotatifs
+rotated_cube_y_lines = create_lines(rotated_points_y, color='green', opacity=0.5)  # Légèrement transparent pour les cubes rotatifs
+rotated_cube_z_lines = create_lines(rotated_points_z, color='purple', opacity=0.5)  # Légèrement transparent pour les cubes rotatifs
+
+# Créer la scène en combinant tous les objets line3d manuellement
 scene = original_cube_lines[0]
 for line in original_cube_lines[1:]:
-	scene += line
- 
+    scene += line
+
 for line in rotated_cube_x_lines:
-	scene += line
- 
+    scene += line
+
 for line in rotated_cube_y_lines:
-	scene += line
- 
+    scene += line
+
 for line in rotated_cube_z_lines:
-	scene += line
- 
-# Define the directions as in the original code (for arrows)
+    scene += line
+
+# Définir les directions comme dans le code original (pour les flèches)
 sqrt2_2 = sqrt(2)/2
 directions = [
-	(1, 0, 1), (1, 1, 0), (1, -sqrt2_2, -sqrt2_2),
-	(1, sqrt2_2, -sqrt2_2), (1, -sqrt2_2, sqrt2_2), (1, sqrt2_2, sqrt2_2),
-	(1, -sqrt2_2, 0), (1, sqrt2_2, 0), (1, 0, 0),
-	(1, 0, -sqrt2_2), (1, 0, sqrt2_2), (-1, 0, 1),
-	(0, -1, 1), (0, 1, 1), (-sqrt2_2, 0, 1),
-	(sqrt2_2, 0, 1), (0, 0, 1), (0, -sqrt2_2, 1),
-	(0, sqrt2_2, 1), (-sqrt2_2, -sqrt2_2, 1), (sqrt2_2, -sqrt2_2, 1),
-	(-sqrt2_2, sqrt2_2, 1), (sqrt2_2, sqrt2_2, 1), (-1, 1, 0),
-	(-sqrt2_2, 1, 0), (sqrt2_2, 1, 0), (0, 1, 0),
-	(-sqrt2_2, 1, sqrt2_2), (-sqrt2_2, 1, -sqrt2_2), (sqrt2_2, 1, sqrt2_2),
-	(sqrt2_2, 1, -sqrt2_2), (0, 1, -sqrt2_2), (0, 1, sqrt2_2)
+    (1, 0, 1), (1, 1, 0), (1, -sqrt2_2, -sqrt2_2),
+    (1, sqrt2_2, -sqrt2_2), (1, -sqrt2_2, sqrt2_2), (1, sqrt2_2, sqrt2_2),
+    (1, -sqrt2_2, 0), (1, sqrt2_2, 0), (1, 0, 0),
+    (1, 0, -sqrt2_2), (1, 0, sqrt2_2), (-1, 0, 1),
+    (0, -1, 1), (0, 1, 1), (-sqrt2_2, 0, 1),
+    (sqrt2_2, 0, 1), (0, 0, 1), (0, -sqrt2_2, 1),
+    (0, sqrt2_2, 1), (-sqrt2_2, -sqrt2_2, 1), (sqrt2_2, -sqrt2_2, 1),
+    (-sqrt2_2, sqrt2_2, 1), (sqrt2_2, sqrt2_2, 1), (-1, 1, 0),
+    (-sqrt2_2, 1, 0), (sqrt2_2, 1, 0), (0, 1, 0),
+    (-sqrt2_2, 1, sqrt2_2), (-sqrt2_2, 1, -sqrt2_2), (sqrt2_2, 1, sqrt2_2),
+    (sqrt2_2, 1, -sqrt2_2), (0, 1, -sqrt2_2), (0, 1, sqrt2_2)
 ]
- 
-# Add the points and arrows for the directions
+
+# Ajouter les points et flèches pour les directions
 points = [point3d(p, size=20, color='blue') for p in directions]
 vectors = [arrow3d((0, 0, 0), (1.5*p[0], 1.5*p[1], 1.5*p[2]), color='red', width=0.5) for p in directions]
 labels = [text3d(f"{i+1}", p, color='black', fontsize=12) for i, p in enumerate(directions)]
- 
-# Combine the cube and vectors in the same scene
+
+# Combiner le cube et les vecteurs dans la même scène
 scene += sum(points) + sum(vectors) + sum(labels)
- 
-# Display the scene with rotation cubes and arrows
-scene.show(frame=False, axes=True, figsize=[8, 8]) 
+
+# Afficher la scène avec les cubes rotatifs et les flèches
+scene.show(frame=False, axes=True, figsize=[8, 8])
